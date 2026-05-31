@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poster – Thuật Toán Xác Suất Stern</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+            onload="renderMathInElement(document.body);"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false}
+                ],
+                throwOnError: false
+            });
+        });
+    </script>
+</head>
+<body>
+
+<header class="header">
+    <div class="title-block">
+        <div class="title-tag">Tiểu luận khoa học · ĐHKHTN · 2026</div>
+        <h1 class="poster-title">NGHIÊN CỨU THUẬT TOÁN XÁC SUẤT STERN<br>
+            <span style="color:var(--accent)">Phương Pháp Tìm Từ Mã Có Trọng Số Nhỏ</span>
+        </h1>
+        <p class="poster-subtitle">Information Set Decoding (ISD) · Syndrome Decoding Problem (SDP) · Post-Quantum
+            Cryptography</p>
+    </div>
+    <div class="meta-block">
+        <div class="name">Nguyễn Thị Lan Anh</div>
+        <div>MSV: 23001826</div>
+        <div class="uni">Khoa Toán – Cơ – Tin học</div>
+        <div>GVHD: GV. Mạc Đăng Trường</div>
+        <div style="margin-top:4px;color:var(--border)">──────────────</div>
+        <div>Python 3.13 · NumPy · Streamlit</div>
+    </div>
+</header>
+
+<div class="grid-main">
+
+    <div class="card blue">
+        <div class="card-label">01 · Bối cảnh & Động lực</div>
+        <div class="card-title">Sự tiến hóa của thuật toán ISD</div>
+        <div class="timeline">
+
+            <div class="tl-item" style="margin-bottom: 15px;">
+                <div style="display: flex; align-items: baseline; gap: 12px; margin-bottom: 4px;">
+                    <div class="tl-year" style="margin: 0; white-space: nowrap;">1962 — Prange</div>
+                    <div class="tl-who" style="margin: 0; color: var(--accent); font-weight: 700; font-size: 13px;">Nền
+                        móng Information Set Decoding
+                    </div>
+                </div>
+                <div class="tl-desc">Đưa ra khái niệm giải mã dựa trên tập thông tin sạch lỗi (p=0). Đơn giản nhưng xác
+                    suất thành công cực thấp khi mã dài.
+                </div>
+            </div>
+
+            <div class="tl-item" style="margin-bottom: 15px;">
+                <div style="display: flex; align-items: baseline; gap: 12px; margin-bottom: 4px;">
+                    <div class="tl-year" style="margin: 0; white-space: nowrap;">1988 — Lee-Brickell</div>
+                    <div class="tl-who" style="margin: 0; color: var(--accent); font-weight: 700; font-size: 13px;">
+                        Duyệt lỗi cục bộ
+                    </div>
+                </div>
+                <div class="tl-desc">Cho phép tối đa p lỗi trong tập thông tin. Tăng xác suất tìm thấy vector lỗi e lên
+                    gấp nhiều lần so với Prange.
+                </div>
+            </div>
+
+            <div class="tl-item" style="margin-bottom: 15px;">
+                <div style="display: flex; align-items: baseline; gap: 12px; margin-bottom: 4px;">
+                    <div class="tl-year" style="margin: 0; white-space: nowrap;">1988 — Leon</div>
+                    <div class="tl-who" style="margin: 0; color: var(--accent); font-weight: 700; font-size: 13px;">Kỹ
+                        thuật Cửa sổ (Windowing)
+                    </div>
+                </div>
+                <div class="tl-desc">Giới thiệu cửa sổ l bit để loại bỏ sớm các ứng viên không thỏa mãn hội chứng cục
+                    bộ, giảm đáng kể khối lượng tính toán.
+                </div>
+            </div>
+
+            <div class="tl-item" style="margin-bottom: 5px;">
+                <div style="display: flex; align-items: baseline; gap: 12px; margin-bottom: 4px;">
+                    <div class="tl-year" style="margin: 0; white-space: nowrap; color: var(--accent2);">1989 — Stern ★
+                    </div>
+                    <div class="tl-who" style="margin: 0; color: var(--accent2); font-weight: 700; font-size: 13px;">
+                        Meet-in-the-Middle
+                    </div>
+                </div>
+                <div class="tl-desc" style="border-left-color: var(--accent2);">Kết hợp Lee-Brickell + Leon + Birthday
+                    Paradox (va chạm bảng băm). Đây là thuật toán hiệu quả nhất tấn công SDP.
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="card orange">
+        <div class="card-label">02 · Bài toán SDP</div>
+        <div class="card-title">Syndrome Decoding Problem</div>
+
+        <p style="margin-bottom:8px; font-size:11px; font-weight:700; color:var(--accent2); letter-spacing:0.5px;">ĐẦU
+            VÀO (INPUT):</p>
+        <div class="problem-eq">
+            <strong style="color:#0f172a;">H</strong> ∈ 𝔽₂<sup style="font-size:10px">(n−k)×n</sup> <span
+                class="comment"># Ma trận kiểm tra (Parity-check)</span><br>
+            <strong style="color:#0f172a;">s</strong> ∈ 𝔽₂<sup style="font-size:10px">n−k</sup> <span class="comment"># Vector hội chứng (Syndrome)</span><br>
+            <strong style="color:#0f172a;">w</strong> ∈ ℤ⁺ <span class="comment"># Trọng số lỗi mục tiêu</span>
+        </div>
+
+        <p style="margin:12px 0 6px 0; font-size:11px; font-weight:700; color:var(--accent2); letter-spacing:0.5px;">MỤC
+            TIÊU (OUTPUT):</p>
+        <p style="margin-bottom:8px;">Tìm vector lỗi bí mật <strong style="color:var(--accent2);">e ∈ 𝔽₂ⁿ</strong> thỏa
+            mãn đồng thời:</p>
+
+        <div class="problem-eq"
+             style="background:#fff1f2; border-color:#fecdd3; border-left-color:var(--accent2); color:var(--accent2); text-align:center; font-size:12px; font-weight:800; padding:16px 12px;">
+            H · eᵀ = s <span style="color:#f43f5e; font-weight:400; margin:0 12px; font-size:12px;">và</span> wt(e) = w
+        </div>
+
+        <ul style="margin-top:14px;">
+            <li><strong style="color:#0f172a;">Độ khó NP-Hard:</strong> Được Berlekamp, McEliece chứng minh (1978).</li>
+            <li><strong style="color:#0f172a;">Bùng nổ tổ hợp:</strong> Không gian duyệt lỗi lên tới
+                <strong>C(n,w)</strong>.
+            </li>
+            <li><strong style="color:#0f172a;">Ứng dụng PQC:</strong> Nền tảng an toàn của hệ mật hậu lượng tử McEliece.
+            </li>
+        </ul>
+    </div>
+    <div class="card purple">
+    <div class="card-label">03 · KIẾN TRÚC HỆ THỐNG</div>
+    <div class="card-title">Thuật toán Stern (Mã giả)</div>
+
+    <div style="
+        display: block !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding-left: 25px !important;
+        margin-top: 10px;
+        font-size: 13px;
+        line-height: 1.45;
+        white-space: pre-wrap;
+        text-align: left !important;
+        color: inherit;
+    ">
+        <span class="c-fn">STERN_ALGO</span>:
+<span class="c-kw">Input:</span> H, s, w, p, l | <span class="c-kw">Output:</span> e
+<span class="c-kw">Repeat</span>:
+1. $\Pi$ ← <span class="c-fn">RandPerm</span>(n)
+2. H' ← H[:, $\Pi$], s' ← <span class="c-fn">Gauss</span>(H, s)
+3. <span class="c-kw">If</span> Gauss_Fail: <span class="c-kw">Continue</span>
+4. T ← <span class="c-fn">Empty_Hash_Map</span>()
+5. (X, Y) ← <span class="c-fn">Split</span>(k, 2)
+<span class="c-cm">// Pha X: Lưu trữ</span>
+6. <span class="c-kw">For</span> each $e_x \in \mathbb{F}_2^{k/2}$:
+7.  <span class="c-kw">If</span> <span class="c-fn">wt</span>($e_x$) == p:
+8.   $s_x$ ← $H'_{[0:l], X} \cdot e_x^T$, $T[s_x]$ ← $e_x$
+<span class="c-cm">// Pha Y: Đối soát</span>
+10. <span class="c-kw">For</span> each $e_y \in \mathbb{F}_2^{k/2}$:
+11. <span class="c-kw">If</span> <span class="c-fn">wt</span>($e_y$) == p:
+12.  $s_y$ ← $H'_{[0:l], Y} \cdot e_y^T$
+13.  $target$ ← $s'_{[0:l]} \oplus s_y$
+14.  <span class="c-kw">If</span> $target \in T$:
+15.   $e$ ← [$T[target], e_y, 0, s' \oplus \dots$]
+17.   <span class="c-kw">If</span> <span class="c-fn">wt</span>(e) == w: <span class="c-kw">Return</span> $e \cdot \Pi^{-1}$
+<span class="c-kw">End Repeat</span>
+    </div>
+</div>
+    <div class="card blue span2">
+        <div class="card-label" style="font-size: 11px;">04 · Thuật toán Stern (Lý thuyết & Ví dụ)</div>
+<div class="card-title" style="margin-bottom: 10px; font-size: 18px;">Cơ chế Meet-in-the-middle & Hash Collision</div>
+
+<div class="steps-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+  <div style="display:flex; flex-direction:column; gap:6px;">
+    <div class="step-item" style="padding: 8px; margin: 0;">
+      <div class="step-number" style="width:22px; height:22px; font-size:12px;">01</div>
+      <div class="step-content">
+        <div class="step-title" style="font-size: 13.5px;">Biến đổi Systematic Form</div>
+        <div class="step-text" style="font-size: 11px; line-height:1.3;">Hoán vị $\Pi$ và khử Gauss đưa $H$ về dạng $[H' | I_{n-k}]$ để cô lập tập thông tin.</div>
+      </div>
+    </div>
+    <div class="step-item" style="padding: 8px; margin: 0;">
+      <div class="step-number" style="width:22px; height:22px; font-size:12px;">02</div>
+      <div class="step-content">
+        <div class="step-title" style="font-size: 13.5px;">Phân hoạch Splitting</div>
+        <div class="step-text" style="font-size: 11px; line-height:1.3;">Chia tập $k$ thành $X, Y$ ($k/2$ mỗi khối). Giả định có đúng $p$ lỗi mỗi khối.</div>
+      </div>
+    </div>
+    <div class="step-item" style="padding: 8px; margin: 0;">
+      <div class="step-number" style="width:22px; height:22px; font-size:12px;">03</div>
+      <div class="step-content">
+        <div class="step-title" style="font-size: 13.5px;">Cửa sổ va chạm $l$ bit</div>
+        <div class="step-text" style="font-size: 11px; line-height:1.3;">Sử dụng $l$ hàng đầu làm màng lọc sơ bộ để giảm không gian tìm kiếm.</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:6px;">
+    <div class="step-item" style="padding: 8px; margin: 0;">
+      <div class="step-number" style="width:22px; height:22px; font-size:12px;">04</div>
+      <div class="step-content">
+        <div class="step-title" style="font-size: 13.5px;">Bảng băm Pha X</div>
+        <div class="step-text" style="font-size: 11px; line-height:1.3;">Duyệt các tổ hợp trong $X$, tính hội chứng $l$ bit và lưu vào bảng băm (Key: Syndrome, Value: Index).</div>
+      </div>
+    </div>
+    <div class="step-item" style="padding: 8px; margin: 0; border-color: #bbf7d0; background: #f0fdf4;">
+      <div class="step-number" style="width:22px; height:22px; font-size:12px; background:#22c55f; color:#ffffff;">05</div>
+      <div class="step-content">
+        <div class="step-title" style="font-size: 13.5px;">Va chạm & Xác thực</div>
+        <div class="step-text" style="font-size: 11px; line-height:1.3;">Tra cứu khối $Y$ trong bảng băm. Nếu khớp, kiểm tra điều kiện trọng số toàn cục $wt(e)=w$.</div>
+      </div>
+    </div>
+    <div style="padding: 6px 8px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 4px; font-size: 10px; color: #b45309; line-height: 1.2;">
+      <strong>Las Vegas:</strong> Nếu thất bại ở bước 5, lặp lại từ Bước 1 với hoán vị $\Pi$ mới.
+    </div>
+  </div>
+</div>
+
+<div style="margin-top: 12px; border: 1.5px solid #0284c7; border-radius: 8px; background: #f8fafc; overflow: hidden;">
+  <div style="background: #0284c7; padding: 5px 12px; color: white; font-size: 11px; font-weight: 700; text-transform: uppercase; display: flex; justify-content: space-between;">
+    <span>Ví dụ số minh họa (n=8, k=4, w=2, p=1, l=2)</span>
+    <span>Target $s = [1, 1, 0, 1]^T$</span>
+  </div>
+
+  <div style="padding: 10px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 15px;">
+    <div style="font-size: 10.5px; line-height: 1.4;">
+      <div style="font-weight: 700; color: #0284c7; margin-bottom: 4px;">1. Trạng thái ma trận $H_{std}$ & Pha X:</div>
+      <div style="font-family: monospace; background: #fff; padding: 5px; border: 1px solid #e2e8f0; border-radius: 4px; margin-bottom: 6px;">
+        H = [ <span style="color:#ef4444">1 0</span> <span style="color:#3b82f6">1 0</span> | 1 0 0 0 ] <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;[ <span style="color:#ef4444">0 1</span> <span style="color:#3b82f6">1 1</span> | 0 1 0 0 ] <span style="color:#64748b;">&larr; Win $l$</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;[ 1 1 0 1 | 0 0 1 0 ] <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;[ 0 1 0 1 | 0 0 0 1 ]
+      </div>
+      • <b>X={c1, c2}</b>: Lưu c1 $\to$ <span style="background:#fee2e2;">Key 10</span>; c2 $\to$ <span style="background:#fee2e2;">Key 01</span>
+    </div>
+
+    <div style="font-size: 10.5px; line-height: 1.4;">
+      <div style="font-weight: 700; color: #16a34a; margin-bottom: 4px;">2. Pha Y & Va chạm:</div>
+      • Mục tiêu cửa sổ: $s_l = [1, 1]^T$<br>
+      • Xét <b>c4</b> thuộc Y ($S_{y4} = [0, 1]^T$):<br>
+      • Tính: $S_y \oplus s_l = [0, 1] \oplus [1, 1] = \mathbf{[1, 0]}$<br>
+      <div style="background:#dcfce7; padding:4px; border: 1px solid #bbf7d0; border-radius:4px; margin-top:5px; font-weight: 700; color: #15803d;">
+        &rarr; Khớp Key 10 (của c1) trong bảng băm!
+      </div>
+      <div style="margin-top:5px; font-size: 10px;">
+        <b>Kết quả:</b> Lỗi nằm tại {c1, c4}. <br>
+        Kiểm tra: $wt(1,0,0,1,...) = 2 = w$. (Xong)
+      </div>
+    </div>
+  </div>
+</div>
+    </div>
+
+    <div class="card green">
+        <div class="card-label"
+             style="color: #064e3b; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px;">
+            05 · Xác suất lý thuyết & Độ phức tạp
+        </div>
+        <div class="card-title" style="color: #022c22; margin-bottom: 8px; font-size: 18px;">Chiến lược tối ưu hóa Las
+            Vegas
+        </div>
+
+        <div class="formula-box"
+             style="background: #ffffff; border: 1px solid #6ee7b7; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); padding: 12px; border-radius: 8px;">
+            <div style="color:#059669; font-size:10px; margin-bottom:4px; font-weight:700; text-transform:uppercase; text-align:center;">
+                Xác suất thành công một vòng lặp ($P$)
+            </div>
+            <div style="font-size:16px; text-align:center; padding: 6px 0; color: #0f172a;">
+                $$\frac{\binom{k/2}{p}^2 \times \binom{n-k-l}{w-2p}}{\binom{n}{w}}$$
+            </div>
+            <div style="border-top: 1px dashed #cbd5e1; margin-top:4px; padding-top:6px; font-size:11px; color:#475569; text-align:center;">
+                Số vòng lặp kỳ vọng: <strong style="color:#059669;">$\mathbb{E}[\text{it}] \approx 1/P$</strong>
+            </div>
+        </div>
+
+        <div style="margin-top: 8px; display: flex; flex-direction: column; gap: 6px;">
+
+            <div class="insight-box"
+                 style="background: #ffffff; padding: 10px; border-radius: 8px; border-left: 4px solid #10b981; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <h4 style="font-size:11px; margin-bottom:4px; color:#064e3b; text-transform: uppercase;">Cơ chế đánh đổi
+                    (Trade-off)</h4>
+                <div style="font-size:11px; line-height:1.4; color:#334155;">
+                    • <strong style="color:#059669;">Tăng $p$:</strong> Giảm số vòng lặp đáng kể nhưng gây bùng nổ bộ
+                    nhớ RAM.<br>
+                    • <strong style="color:#059669;">Tăng $l$:</strong> Lọc nhiễu tốt hơn nhưng làm giảm xác suất thành
+                    công $P$.
+                </div>
+            </div>
+
+            <div class="insight-box"
+                 style="background: #ffffff; padding: 10px; border-radius: 8px; border-left: 4px solid #059669; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <h4 style="font-size:11px; margin-bottom:4px; color:#064e3b; text-transform: uppercase;">Hiệu quả thực
+                    tế</h4>
+                <p style="font-size:11px; line-height:1.4; color:#334155; margin: 0;">
+                    Cải thiện độ phức tạp từ <strong style="color:#ef4444;">$O(2^k)$</strong> (Brute-force) xuống
+                    <strong style="color:#10b981;">$O(2^{k/2})$</strong>. Thuật toán luôn đảm bảo tìm ra lời giải chính
+                    xác 100% sau đủ số vòng lặp.
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="card orange">
+        <div class="card-label">06 · Thực nghiệm – Tham số p</div>
+        <div class="card-title">So sánh Prange vs Stern<br><span
+                style="font-size:11px;color:var(--muted);font-weight:500;">Cố định: n=100, k=50, w=10, l=8</span></div>
+        <table class="bench-table">
+            <thead>
+            <tr>
+                <th>Thuật toán</th>
+                <th>p</th>
+                <th>Vòng lặp TB</th>
+                <th>T.Gian TB</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><span class="algo-tag tag-prange">Prange</span></td>
+                <td>0</td>
+                <td class="val-bad">10 000.0</td>
+                <td class="val-bad">47.69 s</td>
+            </tr>
+            <tr>
+                <td><span class="algo-tag tag-stern">Stern</span></td>
+                <td>1</td>
+                <td>522.3</td>
+                <td>1.65 s</td>
+            </tr>
+            <tr>
+                <td><span class="algo-tag tag-stern">Stern</span></td>
+                <td>2</td>
+                <td class="val-best">33.7</td>
+                <td class="val-best">0.18 s</td>
+            </tr>
+            </tbody>
+        </table>
+        <p style="margin-top:12px;font-size:11.5px;">p=2 nhanh hơn Prange <strong style="color:var(--accent2)">≈ 260
+            lần</strong> — chứng minh sức mạnh Meet-in-the-Middle.</p>
+    </div>
+
+    <div class="card purple">
+        <div class="card-label">07 · Thực nghiệm – Cửa sổ l</div>
+        <div class="card-title">Sự đánh đổi Trade-off<br><span
+                style="font-size:11px;color:var(--muted);font-weight:500;">Cố định: n=120, k=60, w=12, p=2</span></div>
+        <table class="bench-table">
+            <thead>
+            <tr>
+                <th>l</th>
+                <th>Vòng lặp TB</th>
+                <th>T.Gian TB</th>
+                <th>Nhận xét</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>4</td>
+                <td class="val-bad">114.3</td>
+                <td class="val-bad">5.56 s</td>
+                <td style="font-size:11px;color:var(--muted);">Va chạm giả nhiều</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>88.3</td>
+                <td>0.70 s</td>
+                <td style="font-size:11px;color:var(--muted);">Tốt</td>
+            </tr>
+            <tr>
+                <td style="color:var(--green);font-weight:700;">12 ★</td>
+                <td class="val-best">47.0</td>
+                <td class="val-best">0.28 s</td>
+                <td style="font-size:11px;color:var(--green);font-weight:600;">Sweet spot</td>
+            </tr>
+            <tr>
+                <td>16</td>
+                <td class="val-bad">511.0</td>
+                <td class="val-bad">2.97 s</td>
+                <td style="font-size:11px;color:var(--muted);">Điều kiện khắt khe</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card blue">
+        <div class="card-label">08 · Scalability – Bùng nổ theo n</div>
+        <div class="card-title">Độ phức tạp khi tăng n<br><span
+                style="font-size:11px;color:var(--muted);font-weight:500;">R=1/2, lỗi 10%, p=2, l=8</span></div>
+        <div class="scale-chart">
+            <div class="scale-bar-row">
+                <div class="scale-label">n=60</div>
+                <div class="scale-bar-bg">
+                    <div class="scale-bar-fill bar-n60" data-val="0.16 s"></div>
+                </div>
+            </div>
+            <div class="scale-bar-row">
+                <div class="scale-label">n=80</div>
+                <div class="scale-bar-bg">
+                    <div class="scale-bar-fill bar-n80" data-val="0.19 s"></div>
+                </div>
+            </div>
+            <div class="scale-bar-row">
+                <div class="scale-label">n=100</div>
+                <div class="scale-bar-bg">
+                    <div class="scale-bar-fill bar-n100" data-val="0.87 s"></div>
+                </div>
+            </div>
+            <div class="scale-bar-row">
+                <div class="scale-label">n=120</div>
+                <div class="scale-bar-bg">
+                    <div class="scale-bar-fill bar-n120" data-val="2.10 s"></div>
+                </div>
+            </div>
+        </div>
+        <p style="margin-top:12px;font-size:11.5px;">n tăng 2× → thời gian tăng <strong style="color:var(--accent2)">~13×</strong>.
+            Minh chứng tính chất <strong>NP-khó</strong> của SDP. Hệ mật an toàn tuyệt đối khi n đủ lớn (n > 3000 trong
+            thực tế).</p>
+    </div>
+
+    <div class="card green span3">
+        <div class="card-label">09 · Kết luận & Đóng góp</div>
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px; align-items: start;">
+            <div>
+                <div class="card-title" style="margin-bottom:12px;">Kết quả đạt được</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+                    <div style="background:#f8fafc;border:1px solid var(--border);border-radius:6px;padding:12px;border-left:3px solid var(--accent);">
+                        <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--accent);margin-bottom:6px;">
+                            LÝ THUYẾT
+                        </div>
+                        <p style="font-size:11.5px;">Làm rõ cơ chế <strong>"Chia để trị"</strong> và <strong>Meet-in-the-Middle</strong>.
+                            Phân tích công thức xác suất P và số vòng lặp kỳ vọng 1/P.</p>
+                    </div>
+                    <div style="background:#f8fafc;border:1px solid var(--border);border-radius:6px;padding:12px;border-left:3px solid var(--accent2);">
+                        <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--accent2);margin-bottom:6px;">
+                            THỰC HÀNH
+                        </div>
+                        <p style="font-size:11.5px;">Cài đặt thành công bằng <strong>Python + NumPy</strong>. Xây dựng
+                            ứng dụng minh họa tương tác <strong>Streamlit</strong> với 5 module.</p>
+                    </div>
+                    <div style="background:#f8fafc;border:1px solid var(--border);border-radius:6px;padding:12px;border-left:3px solid var(--green);">
+                        <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--green);margin-bottom:6px;">
+                            AN TOÀN MẬT MÃ
+                        </div>
+                        <p style="font-size:11.5px;">Xác nhận độ phức tạp <strong>hàm mũ</strong> của SDP. Củng cố cơ sở
+                            an toàn của McEliece và các hệ mật PQC.</p>
+                    </div>
+                </div>
+                <div style="margin-top:16px;background:#f8fafc;border:1px dashed var(--border);border-radius:6px;padding:12px 16px;">
+                    <span style="font-family:var(--mono);font-size:10px;font-weight:700;color:var(--accent);letter-spacing:1px;text-transform:uppercase;">Hướng phát triển → </span>
+                    <span style="font-size:12px;font-weight:600;color:#334155;">Song song hóa GPU/Multi-threading &nbsp;·&nbsp; Biến thể MMT/BJMM &nbsp;·&nbsp; Đánh giá chuẩn NIST</span>
+                </div>
+            </div>
+            <div>
+                <div class="metrics">
+                    <div class="metric m-blue">
+                        <div class="metric-val">260×</div>
+                        <div class="metric-label">Nhanh hơn</div>
+                    </div>
+                    <div class="metric m-orange">
+                        <div class="metric-val">O(2<sup style="font-size:14px">k/2</sup>)</div>
+                        <div class="metric-label">Phức tạp</div>
+                    </div>
+                    <div class="metric m-green">
+                        <div class="metric-val">5</div>
+                        <div class="metric-label">Bước lặp</div>
+                    </div>
+                    <div class="metric m-purple">
+                        <div class="metric-val">p,l</div>
+                        <div class="metric-label">Tham số</div>
+                    </div>
+                </div>
+                <div style="margin-top:12px;background:#f8fafc;border:1px solid var(--border);border-radius:6px;padding:12px 16px;">
+                    <div style="font-family:var(--mono);font-size:10px;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:1px;">
+                        FILES – MÃ NGUỒN
+                    </div>
+                    <div style="font-family:var(--mono);font-size:11px;line-height:1.8;color:#475569;font-weight:500;">
+                        <span style="color:var(--accent);font-weight:700;">stern_isd.py</span> — Lõi thuật toán<br>
+                        <span style="color:var(--accent2);font-weight:700;">gf2_matrix.py</span> — Khử Gauss GF(2)<br>
+                        <span style="color:var(--accent3);font-weight:700;">generator.py</span> — Sinh ma trận / lỗi<br>
+                        <span style="color:var(--green);font-weight:700;">benchmark.py</span> — Đo hiệu năng<br>
+                        <span style="color:#d97706;font-weight:700;">app.py</span> — Giao diện Streamlit
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<footer class="footer">
+    <div class="refs">
+        <div class="ref"><span class="ref-label">[1]</span><span>Stern, J. (1989). A method for finding codewords of small weight. STACS.</span>
+        </div>
+        <div class="ref"><span class="ref-label">[4]</span><span>Berlekamp et al. (1978). On the inherent intractability of certain coding problems. IEEE Trans. IT.</span>
+        </div>
+        <div class="ref"><span class="ref-label">[5]</span><span>McEliece, R. (1978). A Public-Key Cryptosystem Based on Algebraic Coding Theory.</span>
+        </div>
+    </div>
+    <div style="text-align:right;">
+        <div style="color:var(--accent);font-weight:700;font-size:11px;">ĐH Khoa học Tự nhiên – ĐHQGHN · 2026</div>
+        <div style="margin-top:2px;">Hà Nội, Việt Nam</div>
+    </div>
+</footer>
+
+</body>
+</html>
